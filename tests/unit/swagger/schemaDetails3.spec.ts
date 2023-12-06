@@ -267,7 +267,7 @@ describe('Definition generation for OpenAPI 3.0.0', () => {
     it('should allow openId scheme', () => {
       const openId: Swagger.OpenIDSecurity = {
         type: 'openIdConnect',
-        openIdConnectUrl: 'https://example.com/.well-known/openid-configuration'
+        openIdConnectUrl: 'https://example.com/.well-known/openid-configuration',
       };
       const optionsWithOpenId = Object.assign({}, defaultOptions, {
         securityDefinitions: {
@@ -282,7 +282,6 @@ describe('Definition generation for OpenAPI 3.0.0', () => {
         openId,
       });
     });
-
   });
 
   describe('example comment', () => {
@@ -1940,6 +1939,7 @@ describe('Definition generation for OpenAPI 3.0.0', () => {
                   excludeToInterface: { $ref: '#/components/schemas/Exclude_OneOrTwo.TypeAliasModel1_', description: undefined, format: undefined, example: undefined },
                   excludeTypeToPrimitive: { $ref: '#/components/schemas/NonNullable_number-or-null_', description: undefined, format: undefined, example: undefined },
                   pick: { $ref: '#/components/schemas/Pick_ThingContainerWithTitle_string_.list_', description: undefined, format: undefined, example: undefined },
+                  nullablePick: { $ref: '#/components/schemas/PickedNullableTestModel', description: undefined, format: undefined, example: undefined },
                   readonlyClass: { $ref: '#/components/schemas/Readonly_TestClassModel_', description: undefined, format: undefined, example: undefined },
                   defaultArgs: { $ref: '#/components/schemas/DefaultTestModel', description: undefined, format: undefined, example: undefined },
                   heritageCheck: { $ref: '#/components/schemas/HeritageTestModel', description: undefined, format: undefined, example: undefined },
@@ -2257,6 +2257,56 @@ describe('Definition generation for OpenAPI 3.0.0', () => {
                 format: undefined,
               },
               `for a schema linked by property ${propertyName}`,
+            );
+
+            const nullablePick = getComponentSchema('PickedNullableTestModel', currentSpec);
+            expect(nullablePick).to.deep.eq(
+              {
+                properties: {
+                  nonNullable: {
+                    type: 'string',
+                    default: undefined,
+                    description: undefined,
+                    format: undefined,
+                    example: undefined,
+                  },
+                  nullable: {
+                    type: 'string',
+                    nullable: true,
+                    default: undefined,
+                    description: undefined,
+                    format: undefined,
+                    example: undefined,
+                  },
+                  addedProp: {
+                    type: 'string',
+                    default: undefined,
+                    description: undefined,
+                    format: undefined,
+                    example: undefined,
+                  },
+                  addedNullableProp: {
+                    type: 'string',
+                    nullable: true,
+                    default: undefined,
+                    description: undefined,
+                    format: undefined,
+                    example: undefined,
+                  },
+                  optional: {
+                    type: 'string',
+                    default: undefined,
+                    description: undefined,
+                    format: undefined,
+                    example: undefined,
+                  },
+                },
+                required: ['nonNullable', 'nullable', 'addedProp', 'addedNullableProp'],
+                type: 'object',
+                description: undefined,
+                additionalProperties: currentSpec.specName === 'specWithNoImplicitExtras' ? false : true,
+              },
+              `for definition linked by ${propertyName}`,
             );
 
             const customRecord = getComponentSchema('Record_id.string_', currentSpec);

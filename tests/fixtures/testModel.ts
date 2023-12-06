@@ -120,6 +120,7 @@ export interface TestModel extends Model {
     excludeTypeToPrimitive?: NonNullable<number | null>;
 
     pick?: Pick<ThingContainerWithTitle<string>, 'list'>;
+    nullablePick?: PickedNullableTestModel;
 
     readonlyClass?: Readonly<TestClassModel>;
 
@@ -1240,6 +1241,18 @@ interface GenericContainer<T, TSameNameDifferentValue> {
   list: T[];
   dangling: DanglingContext<T>;
 }
+
+interface ObjectWithNullable {
+  nonNullable: string;
+  nullable: string | null;
+  optional?: string;
+}
+
+interface PickedNullableTestModel extends Pick<ObjectWithNullable, 'nonNullable' | 'nullable' | 'optional'> {
+  addedProp: string;
+  addedNullableProp: string | null;
+}
+
 
 /**
  * This should only be used inside GenericContainer to check its
